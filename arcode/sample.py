@@ -40,14 +40,14 @@ def show_usage():
     this_file = sys.argv[0:][0]                     # full path
     this_file = (os.path.split(this_file))[1]       # name only
 
-    print 'Usage: ',  this_file,  ' <options>\n'
-    print 'options:\n'
-    print '  -c : Encode input file to output file.'
-    print '  -d : Decode input file to output file.'
-    print '  -i <filename> : Name of input file.'
-    print '  -o <filename> : Name of output file.'
-    print '  -a : Use adaptive model instead of static.'
-    print '  -h | ?  : Print out command line options.\n'
+    print('Usage: ',  this_file,  ' <options>\n')
+    print('options:\n')
+    print('  -c : Encode input file to output file.')
+    print('  -d : Decode input file to output file.')
+    print('  -i <filename> : Name of input file.')
+    print('  -o <filename> : Name of output file.')
+    print('  -a : Use adaptive model instead of static.')
+    print('  -h | ?  : Print out command line options.\n')
 
 if __name__ == "__main__":
 
@@ -77,17 +77,17 @@ if __name__ == "__main__":
 
     # Validate command line options
     if len(input_file) == 0:
-        print 'Error: Input file name is required.\n'
+        print('Error: Input file name is required.\n')
         show_usage()
         exit()
 
     if len(output_file) == 0:
-        print 'Error: Output file name is required.\n'
+        print('Error: Output file name is required.\n')
         show_usage()
         exit()
 
     if encode == None:
-        print 'Error: Encoding or Decoding must be specified.\n'
+        print('Error: Encoding or Decoding must be specified.\n')
         show_usage()
         exit()
 

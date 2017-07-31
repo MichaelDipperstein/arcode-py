@@ -146,7 +146,7 @@ class ArithmeticCode:
         self._underflow_bits = 0    # current underflow bit count
 
         # The probability lower and upper ranges for each symbol
-        self._ranges = [0 for i in xrange(self.upper(EOF_CHAR) + 1)]
+        self._ranges = [0 for i in range(self.upper(EOF_CHAR) + 1)]
 
         self._cumulative_prob = 0   # cumulative probability  of all ranges
 
@@ -202,7 +202,7 @@ class ArithmeticCode:
 
         """
 
-        if type(c) == str:      # handle strings
+        if isinstance(c, (str, bytes)):     # handle strings
             return ord(c)
         return c
 
@@ -228,7 +228,7 @@ class ArithmeticCode:
 
         """
 
-        if type(c) == str:      # handle strings
+        if isinstance(c, (str, bytes)):     # handle strings
             return ord(c) + 1
         return c + 1
 
@@ -280,7 +280,7 @@ class ArithmeticCode:
 
         # encode file 1 byte at at time
         c = self._infile.read(1)
-        while (c != ''):
+        while (len(c) != 0):
             self.apply_symbol_range(c)
             self.write_encoded_bits()
             c = self._infile.read(1)
@@ -318,10 +318,10 @@ class ArithmeticCode:
             raise ArithmeticCodeError('No input file opened for encoding.')
 
         # start with no symbols counted
-        count_array = [0 for i in xrange(EOF_CHAR)]
+        count_array = [0 for i in range(EOF_CHAR)]
 
         c = self._infile.read(1)
-        while (c != ''):
+        while (len(c) != 0):
             count_array[ord(c)] += 1
             c = self._infile.read(1)
 
@@ -329,11 +329,11 @@ class ArithmeticCode:
 
         # rescale counts to be < MAX_PROBABILITY
         if total_count >= MAX_PROBABILITY:
-            rescale_value = (total_count / MAX_PROBABILITY) + 1
+            rescale_value = (total_count // MAX_PROBABILITY) + 1
 
             for index, value in enumerate(count_array):
                 if value > rescale_value:
-                    count_array[index] = value / rescale_value
+                    count_array[index] = value // rescale_value
                 elif value != 0:
                     count_array[index] = 1
 
@@ -371,7 +371,7 @@ class ArithmeticCode:
         self._ranges[self.upper(EOF_CHAR)] = 1  # add one EOF character
         self._cumulative_prob += 1
 
-        for c in xrange(EOF_CHAR + 1):
+        for c in range(EOF_CHAR + 1):
             self._ranges[c + 1] += self._ranges[c]
 
     def write_header(self):
@@ -403,15 +403,16 @@ class ArithmeticCode:
 
         previous = 0
 
-        for c in xrange(EOF_CHAR):
+        for c in range(EOF_CHAR):
             if self._ranges[self.upper(c)] > previous:
                 # some of these symbols will be encoded
                 self._outfile.put_char(c)
+
                 # calculate symbol count
                 previous = (self._ranges[self.upper(c)] - previous)
 
                 # write out PRECISION - 2 bit count
-                self._outfile.put_bits_ltom(previous, (PRECISION - 2))
+                self._outfile.put_bits(previous, (PRECISION - 2))
 
                 # current upper range is previous for the next character
                 previous = self._ranges[self.upper(c)]
@@ -419,7 +420,7 @@ class ArithmeticCode:
         # now write end of table (zero count)
         self._outfile.put_char(0)
         previous = 0
-        self._outfile.put_bits_ltom(previous, (PRECISION - 2))
+        self._outfile.put_bits(previous, (PRECISION - 2))
 
     def initialize_adaptive_probability_range_list(self):
         """Initialize the probability range list for adaptive algorithm.
@@ -444,7 +445,7 @@ class ArithmeticCode:
             None.
 
         """
-        self._ranges = [i for i in xrange(self.upper(EOF_CHAR) + 1)]
+        self._ranges = [i for i in range(self.upper(EOF_CHAR) + 1)]
         self._cumulative_prob = EOF_CHAR + 1
 
     def apply_symbol_range(self, symbol):
@@ -473,18 +474,18 @@ class ArithmeticCode:
 
         """
 
-        range = self._upper - self._lower + 1           # current range
+        curr_range = self._upper - self._lower + 1      # current range
 
         # scale the upper range of the symbol being coded
-        rescaled = self._ranges[self.upper(symbol)] * range
-        rescaled /= self._cumulative_prob
+        rescaled = self._ranges[self.upper(symbol)] * curr_range
+        rescaled //= self._cumulative_prob
 
         # new upper = old lower + rescaled new upper - 1
         self._upper = self._lower + rescaled - 1
 
         # scale lower range of the symbol being coded
-        rescaled = self._ranges[self.lower(symbol)] * range
-        rescaled /= self._cumulative_prob
+        rescaled = self._ranges[self.lower(symbol)] * curr_range
+        rescaled //= self._cumulative_prob
 
         # new lower = old lower + rescaled new lower
         self._lower = self._lower + rescaled
@@ -492,14 +493,14 @@ class ArithmeticCode:
         if not self._static_model:
             # add new symbol to model
             self._cumulative_prob += 1
-            for i in xrange(self.upper(symbol),  len(self._ranges)):
+            for i in range(self.upper(symbol),  len(self._ranges)):
                 self._ranges[i] += 1
 
             # halve current values if _cumulative_prob is too large
             if self._cumulative_prob >= MAX_PROBABILITY:
                 original = 0
 
-                for i in xrange(1, len(self._ranges)):
+                for i in range(1, len(self._ranges)):
                     delta = self._ranges[i] - original
                     original = self._ranges[i]
 
@@ -507,7 +508,7 @@ class ArithmeticCode:
                         # prevent probability from being
                         self._ranges[i] = self._ranges[i - 1] + 1
                     else:
-                        self._ranges[i] = self._ranges[i - 1] + (delta / 2)
+                        self._ranges[i] = self._ranges[i - 1] + (delta // 2)
 
                 self._cumulative_prob = self._ranges[self.upper(EOF_CHAR)]
 
@@ -620,7 +621,7 @@ class ArithmeticCode:
 
         # write out any unwritten underflow bits
         self._underflow_bits += 1
-        for i in xrange(self._underflow_bits):
+        for i in range(self._underflow_bits):
             self._outfile.put_bit((self._lower & mask_bit_one) == 0)
 
     def decode_file(self, input_file_name, output_file_name):
@@ -677,7 +678,9 @@ class ArithmeticCode:
                 # no more symbols
                 break
 
-            self._outfile.write(chr(c))
+            ba = bytearray(1)
+            ba[0] = c
+            self._outfile.write(ba)
 
             # factor out symbol
             self.apply_symbol_range(c)
@@ -712,22 +715,22 @@ class ArithmeticCode:
             raise ArithmeticCodeError('No input file opened for decoding.')
 
         self._cumulative_prob = 0
-        self._ranges = [0 for i in xrange(self.upper(EOF_CHAR) + 1)]
+        self._ranges = [0 for i in range(self.upper(EOF_CHAR) + 1)]
         count = 0
 
         # read [character, probability] sets
         while True:
-            c = self._infile.get_char()
+            c = ord(self._infile.get_char())
 
             # read (PRECISION - 2) bit count
-            count = self._infile.get_bits_ltom(PRECISION - 2)
+            count = self._infile.get_bits(PRECISION - 2)
 
             if count == 0:
                 # 0 count means end of header
                 break
             elif self._ranges[self.upper(c)] != 0:
                 raise ArithmeticCodeError('Duplicate entry for ' +
-                    hex(ord(c)) + ' in header.')
+                    hex(c) + ' in header.')
 
             self._ranges[self.upper(c)] = count
             self._cumulative_prob += count
@@ -759,7 +762,7 @@ class ArithmeticCode:
         self._code = 0
 
         # read PRECISION MSBs of code one bit at a time
-        for i in xrange(PRECISION):
+        for i in range(PRECISION):
             self._code <<= 1
 
             try:
@@ -802,7 +805,7 @@ class ArithmeticCode:
         # reverse the scaling operations from apply_symbol_range
         unscaled = self._code - self._lower + 1
         unscaled = unscaled * self._cumulative_prob - 1
-        unscaled /= range
+        unscaled //= range
         return unscaled
 
     def get_symbol_from_probability(self, probability):
@@ -830,18 +833,18 @@ class ArithmeticCode:
         # initialize indices for binary search
         first = 0
         last = self.upper(EOF_CHAR)
-        middle = last / 2
+        middle = last // 2
 
         # binary search
         while (last >= first):
             if probability < self._ranges[self.lower(middle)]:
                 # lower bound is higher than probability
                 last = middle - 1
-                middle = first + ((last - first) / 2)
+                middle = first + ((last - first) // 2)
             elif probability >= self._ranges[self.upper(middle)]:
                 # upper bound is lower than probability
                 first = middle + 1
-                middle = first + ((last - first) / 2)
+                middle = first + ((last - first) // 2)
             else:
                 # we must have found the right value
                 return middle
@@ -1033,13 +1036,13 @@ class EncodeDirTest(unittest.TestCase):
         """
 
         # use the static model to encode/decode every file in directory
-        print '\nTests Using Static Model:'
+        print('\nTests Using Static Model:')
         for src in self.dir:
             if os.path.isfile(src):
-                print '\tEncoding', src
+                print('\tEncoding', src)
                 self.ar.__init__(True)
                 self.ar.encode_file(src, self.encoded)
-                print '\tDecoding', src
+                print('\tDecoding', src)
                 self.ar.__init__(True)
                 self.ar.decode_file(self.encoded, self.decoded)
 
@@ -1072,13 +1075,13 @@ class EncodeDirTest(unittest.TestCase):
         """
 
         # use the static model to encode/decode every file in directory
-        print '\nTests Using Adaptive Model:'
+        print('\nTests Using Adaptive Model:')
         for src in self.dir:
             if os.path.isfile(src):
-                print '\tEncoding', src
+                print('\tEncoding', src)
                 self.ar.__init__(False)
                 self.ar.encode_file(src, self.encoded)
-                print '\tDecoding', src
+                print('\tDecoding', src)
                 self.ar.__init__(False)
                 self.ar.decode_file(self.encoded, self.decoded)
 

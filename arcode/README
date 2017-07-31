@@ -61,10 +61,10 @@ file that will contain the results of the decoding.
 HISTORY
 -------
 08/06/10 - Initial release
+07/30/17 - Add support for python 3.x
 
 TODO
 ----
-- Add/Verify support for Python 3.x.
 - Add/Verify support for file-like objects.
 
 AUTHOR
