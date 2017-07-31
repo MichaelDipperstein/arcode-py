@@ -5,7 +5,7 @@ arithmetic coding and decoding.  This implementation is not intended to be
 the best, fastest, smallest, or any other performance related adjective.
 
 More information on Arithmetic encoding may be found at:
-http://michael.dipperstein.com/arithmetic
+https://michaeldipperstein.github.io/arithmetic.html
 http://www.datacompression.info/ArithmeticCoding.shtml
 
 FILES
@@ -21,8 +21,8 @@ setup.py        - distutils setup file.
 INSTALLING
 ----------
 This package is dependent on the BitFile package.  A current version may be
-obtained from the Python Package Index (http://pypi.python.org/) or
-http://michael.dipperstein.com/bitlibs/
+obtained from the GitHub repository
+https://github.com/MichaelDipperstein/arcode-py.git
 
 Install the BitFile package prior to installing this package.
 
