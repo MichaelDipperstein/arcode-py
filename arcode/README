@@ -21,8 +21,8 @@ setup.py        - distutils setup file.
 INSTALLING
 ----------
 This package is dependent on the BitFile package.  A current version may be
-obtained from the GitHub repository
-https://github.com/MichaelDipperstein/arcode-py.git
+obtained from the GitHub repository:
+https://github.com/MichaelDipperstein/bitfile-py.git
 
 Install the BitFile package prior to installing this package.
 

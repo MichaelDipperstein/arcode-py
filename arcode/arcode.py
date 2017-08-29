@@ -35,6 +35,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import bitfile
+import os
+import filecmp
+import tempfile
+import unittest
+
 
 EOF_CHAR = 256
 
@@ -562,28 +567,28 @@ class ArithmeticCode:
                     self._underflow_bits -= 1
 
             elif (~self._upper & self._lower) & mask_bit_one:
-                #*******************************************************
+                # ******************************************************
                 # Possible underflow condition: neither MSBs nor second
                 # MSBs match.  It must be the case that lower and upper
                 # have MSBs of 01 and 10.  Remove 2nd MSB from lower and
                 # upper.
-                #*******************************************************
+                # ******************************************************
                 self._underflow_bits += 1
                 self._lower &= ~(mask_bit_zero | mask_bit_one)
                 self._upper |= mask_bit_one
 
-                #*******************************************************
+                # ******************************************************
                 # The shifts below make the rest of the bit removal
                 # work.  If you don't believe me try it yourself.
-                #*******************************************************
+                # ******************************************************
             else:
                 return              # nothing left to do
 
-            #***********************************************************
+            # **********************************************************
             # Mask off old MSB and shift in new LSB.  Remember that
             # lower has all 0s beyond it's end and upper has all 1s
             # beyond it's end.
-            #***********************************************************
+            # **********************************************************
             self._lower &= MSB_MASK
             self._lower <<= 1
             self._upper &= MSB_MASK
@@ -729,7 +734,8 @@ class ArithmeticCode:
                 # 0 count means end of header
                 break
             elif self._ranges[self.upper(c)] != 0:
-                raise ArithmeticCodeError('Duplicate entry for ' +
+                raise ArithmeticCodeError(
+                    'Duplicate entry for ' +
                     hex(c) + ' in header.')
 
             self._ranges[self.upper(c)] = count
@@ -883,12 +889,12 @@ class ArithmeticCode:
                 # MSBs match, allow them to be shifted out
                 pass
             elif (~self._upper & self._lower) & mask_bit_one:
-                #*******************************************************
+                # ******************************************************
                 # Possible underflow condition: neither MSBs nor second
                 # MSBs match.  It must be the case that lower and upper
                 # have MSBs of 01 and 10.  Remove 2nd MSB from lower and
                 # upper.
-                #*******************************************************
+                # ******************************************************
                 self._lower &= ~(mask_bit_zero | mask_bit_one)
                 self._upper |= mask_bit_one
                 self._code ^= mask_bit_one
@@ -898,11 +904,11 @@ class ArithmeticCode:
                 # nothing to shift out
                 return
 
-            #***********************************************************
+            # **********************************************************
             # Mask off old MSB and shift in new LSB.  Remember that
             # lower has all 0s beyond it's end and upper has all 1s
             # beyond it's end.
-            #***********************************************************
+            # **********************************************************
             self._lower &= MSB_MASK
             self._lower <<= 1
             self._upper &= MSB_MASK
@@ -919,11 +925,6 @@ class ArithmeticCode:
                 raise       # other exception.  Let calling code handle it.
             else:
                 self._code |= next_bit
-
-import os
-import filecmp
-import tempfile
-import unittest
 
 
 class EncodeDirTest(unittest.TestCase):
@@ -1046,7 +1047,8 @@ class EncodeDirTest(unittest.TestCase):
                 self.ar.__init__(True)
                 self.ar.decode_file(self.encoded, self.decoded)
 
-                self.assertTrue(filecmp.cmp(src, self.decoded),
+                self.assertTrue(
+                    filecmp.cmp(src, self.decoded),
                     'Failed to Verify {0}'.format(src))
 
                 os.remove(self.encoded)
@@ -1085,7 +1087,8 @@ class EncodeDirTest(unittest.TestCase):
                 self.ar.__init__(False)
                 self.ar.decode_file(self.encoded, self.decoded)
 
-                self.assertTrue(filecmp.cmp(src, self.decoded),
+                self.assertTrue(
+                    filecmp.cmp(src, self.decoded),
                     'Failed to Verify {0}'.format(src))
 
                 os.remove(self.encoded)

@@ -15,17 +15,20 @@ __classifiers__ = [
     'Topic :: Utilities',
 ]
 
-setup(name='arcode',
-      version='0.3',
-      description=\
-        'A module providing arithmetic coding to compress/decompress files.',
-      author='Michael Dipperstein',
-      author_email='mdipper@alumni.engr.ucsb.edu',
-      license='GPL',
-      url='https://michaeldipperstein.github.io/arithmetic.html',
-      packages=['arcode',],
-      package_data={'arcode': ['COPYING', 'README']},
-      platforms='All platforms',
-      long_description=__desc__,
-      classifiers=__classifiers__,
-     )
+module_description = \
+    'A module providing arithmetic coding to compress/decompress files.',
+
+setup(
+    name='arcode',
+    version='0.3',
+    description=module_description,
+    author='Michael Dipperstein',
+    author_email='mdipper@alumni.engr.ucsb.edu',
+    license='GPL',
+    url='https://michaeldipperstein.github.io/arithmetic.html',
+    packages=['arcode', ],
+    package_data={'arcode': ['COPYING', 'README']},
+    platforms='All platforms',
+    long_description=__desc__,
+    classifiers=__classifiers__,
+)

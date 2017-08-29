@@ -57,8 +57,17 @@ if __name__ == "__main__":
     output_file = ''
 
     # Parse command line options
-    opts, args = getopt.getopt(sys.argv[1:], 'acdh?i:o:',
-        ['help', 'encode', 'decode', 'adaptive', 'input=', 'output='])
+    opts, args = getopt.getopt(
+                    sys.argv[1:],
+                    'acdh?i:o:',
+                    [
+                        'help',
+                        'encode',
+                        'decode',
+                        'adaptive',
+                        'input=',
+                        'output='
+                    ])
 
     for o, a in opts:
         if o in ('-c', '--encode'):
@@ -86,7 +95,7 @@ if __name__ == "__main__":
         show_usage()
         exit()
 
-    if encode == None:
+    if encode is None:
         print('Error: Encoding or Decoding must be specified.\n')
         show_usage()
         exit()
