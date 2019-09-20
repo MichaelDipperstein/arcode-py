@@ -23,7 +23,7 @@ setup(
     version='0.3',
     description=module_description,
     author='Michael Dipperstein',
-    author_email='mdipper@alumni.engr.ucsb.edu',
+    author_email='mdipperstein@gmail.com',
     license='GPL',
     url='https://michaeldipperstein.github.io/arithmetic.html',
     packages=['arcode', ],

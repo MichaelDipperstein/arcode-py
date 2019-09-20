@@ -10,7 +10,7 @@
 
 sample: A program demonstrating how to use the ArithmeticCode class.
 Copyright (C) 2010
-      Michael Dipperstein (mdipper@alumni.engr.ucsb.edu)
+      Michael Dipperstein (mdipperstein@gmail.com)
 
 This file implements the sample module.
 

@@ -2,7 +2,7 @@
 arcode: A python module that uses arithmetic coding to compress and
         decompress files.
 Copyright (C) 2010
-      Michael Dipperstein (mdipper@alumni.engr.ucsb.edu)
+      Michael Dipperstein (mdipperstein@gmail.com)
 
 Arcode is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the
@@ -20,6 +20,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from arcode import ArithmeticCode
 
-__author__ = "Michael Dipperstein <mdipper@alumni.engr.ucsb.edu>"
+__author__ = "Michael Dipperstein <mdipperstein@gmail.com>"
 __license__ = "GPL"
 __version__ = "0.1"
